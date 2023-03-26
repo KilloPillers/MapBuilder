@@ -91,6 +91,7 @@ class Tile(tk.Button):
         self.is_action_tile = False
         self.tile_name = "None"
         self.event_id = "None"
+
     def set_height(self, new_height):
         self.configure(text=str(new_height))
         self.tile_height = new_height
