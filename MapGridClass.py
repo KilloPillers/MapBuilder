@@ -2,15 +2,15 @@ import tkinter as tk
 from tkinter import ttk
 
 class ConfigurationFrame(ttk.LabelFrame):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.Tile = Tile
-        self.Tiles = [Tile]
+    def __init__(self, container, *args, **kwargs):
+        super().__init__(container, *args, **kwargs)
+        self.Tile = None
+        self.Tiles = []
         self.DP = tk.BooleanVar()
         self.AT = tk.BooleanVar()
 
         self.configure(text="Tile Configuration", padding=5)
-        self.grid(row=0,column=1, rowspan=10)
+        self.grid(row=0,column=0)
         
         self.HeightLabelFrame = tk.LabelFrame(self, text="Height")
         self.HeightLabelFrame.grid(row=0, column=0, sticky='w')
@@ -19,18 +19,23 @@ class ConfigurationFrame(ttk.LabelFrame):
         self.HeightEntry = tk.Entry(self.HeightLabelFrame, width=20, validate='all', validatecommand=(self.register(lambda e: True if str.isdigit or "" else False), '%P'))
         self.HeightEntry.insert(0, " ")
         self.HeightEntry.grid(row=0, column=1)
+        self.HeightSaveButton = tk.Button(self.HeightLabelFrame, text="Save Only Height Configs",
+                                    command=self.SaveHeightConfigs)
+        self.HeightSaveButton.grid(row=3, column=1, sticky="se", pady=5, padx=5)
         
         self.DeployPositionLabelFrame = tk.LabelFrame(self, text="Deploy Position")
         self.DeployPositionLabelFrame.grid(row=1, column=0, sticky='w')
         self.DeployPositionCheckButton = tk.Checkbutton(self.DeployPositionLabelFrame, text="Flag", variable=self.DP,
                                                         onvalue=True, offvalue=False)
         self.DeployPositionCheckButton.grid(row=0,column=0, sticky='w')
+        self.DeploySaveButton = tk.Button(self.DeployPositionLabelFrame, text="Save Only Deploy Configs",
+                                    command=self.SaveDeployConfigs)
+        self.DeploySaveButton.grid(row=3, column=1, sticky="se", pady=5, padx=5)
 
         self.ActionTileLabelFrame = tk.LabelFrame(self, text="Action Position")
         self.ActionTileLabelFrame.grid(row=2, column=0, sticky='w')
         self.ActionTileCheckBox = tk.Checkbutton(self.ActionTileLabelFrame, text="Flag", variable=self.AT,
                                                  onvalue=True, offvalue=False)
-
         self.ActionTileCheckBox.grid(row=0, column=0, sticky='w')
         self.TileNameText = tk.Label(self.ActionTileLabelFrame, text="Tile Name: ")
         self.TileNameText.grid(row=1, column=0)
@@ -42,9 +47,11 @@ class ConfigurationFrame(ttk.LabelFrame):
         self.EventIDEntry = tk.Entry(self.ActionTileLabelFrame, width=20)
         self.EventIDEntry.insert(0, " ")
         self.EventIDEntry.grid(row=2, column=1)
+        self.ActionSaveButton = tk.Button(self.ActionTileLabelFrame, text="Save Only Action Configs", command=self.SaveActionConfigs)
+        self.ActionSaveButton.grid(row=3, column=1, sticky="se", pady=5, padx=5)
 
-        self.SaveButton = tk.Button(self, text="Save to Tile(s)", command=self.SaveConfigs)
-        self.SaveButton.grid(row=3,column=0, sticky="se")
+        self.SaveButton = tk.Button(self, text="Save All Configs", command=self.SaveAllConfigs)
+        self.SaveButton.grid(row=3,column=0, sticky="se", pady=5, padx=5)
 
         self.EventIDEntry.bind("<Tab>", lambda e: self.TabControl(e))
 
@@ -65,10 +72,33 @@ class ConfigurationFrame(ttk.LabelFrame):
     def LoadSelectionsConfigs(self, Tiles):
         self.Tiles = Tiles
 
-    def SaveConfigs(self):
+    def SaveActionConfigs(self):
         if len(self.Tiles) > 0:
             for Tile in self.Tiles:
-                Tile.set_height(int(self.HeightEntry.get()))
+                Tile.set_action_tile(self.AT.get())
+                Tile.set_tile_name(self.TileNameEntry.get())
+                Tile.set_event_id(self.EventIDEntry.get())
+        else:
+            self.Tile.set_action_tile(self.AT.get())
+            self.Tile.set_tile_name(self.TileNameEntry.get())
+            self.Tile.set_event_id(self.EventIDEntry.get())
+    def SaveDeployConfigs(self):
+        if len(self.Tiles) > 0:
+            for Tile in self.Tiles:
+                Tile.set_deploy_position(self.DP.get())
+        else:
+            self.Tile.set_deploy_position(self.DP.get())
+    def SaveHeightConfigs(self):
+        if len(self.Tiles) > 0:
+            for Tile in self.Tiles:
+                Tile.set_height(self.HeightEntry.get())
+        else:
+            self.Tile.set_height(self.HeightEntry.get())
+
+    def SaveAllConfigs(self):
+        if len(self.Tiles) > 0:
+            for Tile in self.Tiles:
+                Tile.set_height(self.HeightEntry.get())
                 Tile.set_deploy_position(self.DP.get())
                 Tile.set_action_tile(self.AT.get())
                 Tile.set_tile_name(self.TileNameEntry.get())
@@ -85,7 +115,7 @@ class Tile(tk.Button):
         super().__init__(container, *args, **kwargs)
         self.container = container
         self.configs = ConfigurationFrame
-        self.tile_height = 64
+        self.tile_height = 1
         self.tile_position = pos
         self.is_deploy_position = False
         self.is_action_tile = False
@@ -186,21 +216,25 @@ class MapGrid(ttk.Frame):
 
         self.default_bg = self.ClearSelectionButton.cget('bg')
 
+        self.container.bind("<Escape>", lambda e: self.EmptySelectedButtons(e))
+
         # Initialize Buttons
     def InitializeButtons(self, height, width):
         self.ButtonGrid = [[None for x in range(width)] for y in range(height)]
         for y in range(height):
             for x in range(width):
-                self.ButtonGrid[y][x] = Tile(self.frame.scrollable_frame, self.ConfigurationFrame, [x,y], height=2, width=4, name="{}:{}".format(x, y), text="64")
+                self.ButtonGrid[y][x] = Tile(self.frame.scrollable_frame, self.ConfigurationFrame, [x,y], height=2, width=4, name="{}:{}".format(x, y), text="1")
                 self.ButtonGrid[y][x].grid(row=y, column=x)
                 self.ButtonGrid[y][x].bind("<Up>", lambda e: self.ArrowKeyFocusHandler(e))
                 self.ButtonGrid[y][x].bind("<Down>", lambda e: self.ArrowKeyFocusHandler(e))
                 self.ButtonGrid[y][x].bind("<Left>", lambda e: self.ArrowKeyFocusHandler(e))
                 self.ButtonGrid[y][x].bind("<Right>", lambda e: self.ArrowKeyFocusHandler(e))
                 self.ButtonGrid[y][x].bind("<Shift-space>", lambda e: self.RegionSelectionHandler(e))
-                self.ButtonGrid[y][x].bind("<Control-space>", lambda e: self.SelectionHandler(e))
+                self.ButtonGrid[y][x].bind("<space>", lambda e: self.SelectionHandler(e))
                 self.ButtonGrid[y][x].bind("<Button-1>", lambda e: self.M1FocusHandler(e))
                 self.ButtonGrid[y][x].bind("<FocusIn>", lambda e: self.SetConfigurationFrame(e))
+
+
         #container.bind("<esc>", lambda Se: self.ClearSelection(e))
         #container.bind_all("<Button-1>", lambda e: self.M1FocusHandler(e))
 
@@ -313,9 +347,10 @@ class MapGrid(ttk.Frame):
         self.is_selecting=False
         self.SelectionText.configure(text="Selection:" + str(self.selection_square))
 
-    def EmptySelectedButtons(self):
+    def EmptySelectedButtons(self, e=None):
         for button in self.selected_buttons:
             button.configure(bg=self.default_bg)
         self.selected_buttons = set()
         self.ClearSelection()
+        self.ConfigurationFrame.Tiles = []
         self.SelectedCountText.configure(text="Selected Count:"+str(len(self.selected_buttons)))
