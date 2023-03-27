@@ -2,14 +2,15 @@ import tkinter as tk
 from MapGridClass import MapGrid, ConfigurationFrame
 
 def ExportToLuaCode():
-    ButtonGrid = M.ButtonGrid
+    ButtonGrid = list(zip(*M.ButtonGrid))
     deploy_position_list = []
     action_tile_list = []
     code = "local newheights = {};\n"
-    code += "local mapXSize = " + str(len(ButtonGrid[0])) + ';\n'
-    code += "local mapYSize = " + str(len(ButtonGrid)) + ';\n'
-    for ButtonList in ButtonGrid:
-        code += "newheights[" + str(ButtonList[0].tile_position[1] + 1) + "] = {"
+    code += "local mapXSize = " + str(len(ButtonGrid)) + ';\n'
+    code += "local mapYSize = " + str(len(ButtonGrid[0])) + ';\n'
+
+    for count, ButtonList in enumerate(ButtonGrid):
+        code += "newheights[" + str(count + 1) +  "] = {"
         for Button in ButtonList:
             if Button.is_deploy_position:
                 deploy_position_list.append(Button)

@@ -68,7 +68,7 @@ class ConfigurationFrame(ttk.LabelFrame):
     def SaveConfigs(self):
         if len(self.Tiles) > 0:
             for Tile in self.Tiles:
-                Tile.set_height(self.HeightEntry.get())
+                Tile.set_height(int(self.HeightEntry.get()))
                 Tile.set_deploy_position(self.DP.get())
                 Tile.set_action_tile(self.AT.get())
                 Tile.set_tile_name(self.TileNameEntry.get())
@@ -91,10 +91,6 @@ class Tile(tk.Button):
         self.is_action_tile = False
         self.tile_name = "None"
         self.event_id = "None"
-        self.bind("<FocusIn>", lambda e: self.SetConfigurationFrame)
-
-    def SetConfigurationFrame(self):
-        self.configs.LoadTileConfigs(Tile=self)
 
     def set_height(self, new_height):
         self.configure(text=str(new_height))
@@ -148,7 +144,7 @@ class MapGrid(ttk.Frame):
         self.height = height
         self.focus = [0,0]
         self.focused_tile = None
-        self.focus_padding = 4
+        self.focus_padding = 6
         self.is_selecting = False
         self.selection_square = [None, None]
         self.selected_buttons = set()
@@ -195,7 +191,7 @@ class MapGrid(ttk.Frame):
         self.ButtonGrid = [[None for x in range(width)] for y in range(height)]
         for y in range(height):
             for x in range(width):
-                self.ButtonGrid[y][x] = Tile(self.frame.scrollable_frame, self.ConfigurationFrame, [x,y], height=2, width=2, name="{}:{}".format(x, y), text="64")
+                self.ButtonGrid[y][x] = Tile(self.frame.scrollable_frame, self.ConfigurationFrame, [x,y], height=2, width=4, name="{}:{}".format(x, y), text="64")
                 self.ButtonGrid[y][x].grid(row=y, column=x)
                 self.ButtonGrid[y][x].bind("<Up>", lambda e: self.ArrowKeyFocusHandler(e))
                 self.ButtonGrid[y][x].bind("<Down>", lambda e: self.ArrowKeyFocusHandler(e))
@@ -204,9 +200,12 @@ class MapGrid(ttk.Frame):
                 self.ButtonGrid[y][x].bind("<Shift-space>", lambda e: self.RegionSelectionHandler(e))
                 self.ButtonGrid[y][x].bind("<Control-space>", lambda e: self.SelectionHandler(e))
                 self.ButtonGrid[y][x].bind("<Button-1>", lambda e: self.M1FocusHandler(e))
-
+                self.ButtonGrid[y][x].bind("<FocusIn>", lambda e: self.SetConfigurationFrame(e))
         #container.bind("<esc>", lambda Se: self.ClearSelection(e))
         #container.bind_all("<Button-1>", lambda e: self.M1FocusHandler(e))
+
+    def SetConfigurationFrame(self, event):
+        self.ConfigurationFrame.LoadTileConfigs(event.widget)
 
     def RebuildMap(self):
         new_width = self.WidthEntry.get()
@@ -225,7 +224,7 @@ class MapGrid(ttk.Frame):
                     self.ButtonGrid[y][x].destroy()
 
         self.InitializeButtons(new_height, new_width)
-
+        self.EmptySelectedButtons()
         self.height = new_height
         self.width = new_width
         self.focus = [0, 0]
