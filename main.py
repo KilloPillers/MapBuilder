@@ -1,6 +1,7 @@
 import tkinter as tk
-from MapGridClass import MapGrid, ConfigurationFrame
+from MapGridClass import MapGrid, ConfigurationFrame, UnitFrame
 from Graph import MapGraph
+from tkinter import ttk
 
 class CodeText(tk.Text):
     def __init__(self, container, code, *args, **kwargs):
@@ -10,6 +11,7 @@ class CodeText(tk.Text):
         self.bind("<Escape>", lambda e: self.hide(e), add="+")
     def hide(self, e):
         self.grid_forget()
+        self.destroy()
 
 def ShowGraph():
     heights = []
@@ -53,15 +55,25 @@ def ExportToLuaCode():
 root = tk.Tk()
 root.title("Map Building Tool")
 root.resizable(False, False) #resizing is for screenlits
-right_frame = tk.Frame(root)
-O = ConfigurationFrame(right_frame, text="Tile Configuration")
-M = MapGrid(root, 50, 50, 500, 500, O)
-ExportButton = tk.Button(right_frame, text="Export To Lua Code", command=ExportToLuaCode)
-ShowGraph = tk.Button(right_frame, text="Show Graph", command=ShowGraph)
+RightFrame = tk.Frame(root)
+OutPutFrame = tk.Frame(RightFrame)
+TabControl = ttk.Notebook(RightFrame)
+TileConfigTabFrame = tk.Frame(TabControl)
+UnitConfigTabFrame = tk.Frame(TabControl)
+TabControl.add(TileConfigTabFrame, text="Tile Configuration")
+TabControl.add(UnitConfigTabFrame, text="Unit Configuration")
+TileConfigurations = ConfigurationFrame(TileConfigTabFrame)
+M = MapGrid(root, 50, 50, 500, 500, TileConfigurations)
+UnitConfigurations = UnitFrame(UnitConfigTabFrame, M)
+ExportButton = tk.Button(OutPutFrame, text="Export To Lua Code", command=ExportToLuaCode)
+ShowGraph = tk.Button(OutPutFrame, text="Show Graph", command=ShowGraph)
+M.SetUnitFrame(UnitConfigurations)
+
 M.grid(row=0, column=0)
-right_frame.grid(row=0, column=1)
-O.grid(row=0, column=0)
-ExportButton.grid(row=1, column=0, pady=5, padx=5)
-ShowGraph.grid(row=2, column=0, pady=5, padx=5)
+RightFrame.grid(row=0, column=1, sticky="nw")
+TabControl.grid(row=0, column=1, sticky="n")
+OutPutFrame.grid(row=1, column=1, sticky="s")
+ExportButton.grid(row=0, column=0, sticky="s", pady=5, padx=5)
+ShowGraph.grid(row=1, column=0, sticky="s", pady=5, padx=5)
 
 root.mainloop()

@@ -1,7 +1,277 @@
 import tkinter as tk
 from tkinter import ttk
 
-class ConfigurationFrame(ttk.LabelFrame):
+class Unit():
+    def __init__(self,
+            unitName="",
+            classID="",
+            unitID="",
+            personality="RandomAction",
+            deathEvent="nil",
+            maxHP="",
+            maxSP="",
+            Atk="",
+            Def="",
+            Spd="",
+            Hit="",
+            Int="",
+            Res="",
+            skills=["","","",""],
+            passives=["","",""]
+        ):
+        self.unitName = unitName
+        self.classID = classID
+        self.unitID = unitID
+        self.personality = personality
+        self.deathEvent = deathEvent
+
+        self.maxHP = maxHP
+        self.maxSP = maxSP
+        self.Atk = Atk
+        self.Def = Def
+        self.Spd = Spd
+        self.Hit = Hit
+        self.Int = Int
+        self.Res = Res
+
+        self.skills = skills
+        self.passives = passives
+
+class UnitFrame(tk.Frame):
+    def __init__(self, container, MapGrid, *args, **kwargs):
+        super().__init__(container, *args, **kwargs)
+        self.grid(row=0, column=0)
+
+        self.MapGrid = MapGrid
+
+        MiscLabelFrame = tk.LabelFrame(self, text="Misc")
+        MiscLabelFrame.grid(row=0,column=0, columnspan=2)
+
+        UnitNameLabel = tk.Label(MiscLabelFrame, text="Name: ")
+        self.UnitNameEntry = tk.Entry(MiscLabelFrame, width=15)
+        self.UnitNameEntry.insert(0, "")
+        UnitNameLabel.grid(row=0, column=0)
+        self.UnitNameEntry.grid(row=0, column=1)
+
+        ClassIDLabel = tk.Label(MiscLabelFrame, text="Class ID: ")
+        self.ClassIDEntry = tk.Entry(MiscLabelFrame, width=5)
+        self.ClassIDEntry.insert(0, "")
+        ClassIDLabel.grid(row=1, column=0)
+        self.ClassIDEntry.grid(row=1, column=1)
+
+        UnitIDLabel = tk.Label(MiscLabelFrame, text="Unit ID: ")
+        self.UnitIDEntry = tk.Entry(MiscLabelFrame, width=5)
+        self.UnitIDEntry.insert(0, "")
+        UnitIDLabel.grid(row=2, column=0)
+        self.UnitIDEntry.grid(row=2, column=1)
+
+        PersonalityLabel = tk.Label(MiscLabelFrame, text="Personality: ")
+        self.PersonalityEntry = tk.Entry(MiscLabelFrame, width=20)
+        self.PersonalityEntry.insert(0, "RandomAction")
+        PersonalityLabel.grid(row=3, column=0)
+        self.PersonalityEntry.grid(row=3, column=1)
+
+        DeathEventLabel = tk.Label(MiscLabelFrame, text="Death Event: ")
+        self.DeathEventEntry = tk.Entry(MiscLabelFrame, width=5)
+        self.DeathEventEntry.insert(0, "nil")
+        DeathEventLabel.grid(row=4, column=0)
+        self.DeathEventEntry.grid(row=4, column=1)
+
+
+        #rawStats LabelFrame
+        rawStatsLabelFrame = tk.LabelFrame(self, text="Unit Stats")
+        rawStatsLabelFrame.grid(row=1, column=0, rowspan=2, sticky="n")
+
+        maxHPLabel = tk.Label(rawStatsLabelFrame, text="Max HP: ")
+        self.maxHPEntry = tk.Entry(rawStatsLabelFrame, width=5)
+        self.maxHPEntry.insert(0, "10")
+        maxHPLabel.grid(row=1, column=0)
+        self.maxHPEntry.grid(row=1, column=1)
+
+        maxSPLabel = tk.Label(rawStatsLabelFrame, text="Max SP: ")
+        self.maxSPEntry = tk.Entry(rawStatsLabelFrame, width=5)
+        self.maxSPEntry.insert(0, "10")
+        maxSPLabel.grid(row=2, column=0)
+        self.maxSPEntry.grid(row=2, column=1)
+
+        AtkLabel = tk.Label(rawStatsLabelFrame, text="Atk: ")
+        self.AtkEntry = tk.Entry(rawStatsLabelFrame, width=5)
+        self.AtkEntry.insert(0, "10")
+        AtkLabel.grid(row=3, column=0)
+        self.AtkEntry.grid(row=3, column=1)
+
+        DefLabel = tk.Label(rawStatsLabelFrame, text="Def: ")
+        self.DefEntry = tk.Entry(rawStatsLabelFrame, width=5)
+        self.DefEntry.insert(0, "10")
+        DefLabel.grid(row=4, column=0)
+        self.DefEntry.grid(row=4, column=1)
+
+        SpdLabel = tk.Label(rawStatsLabelFrame, text="Spd: ")
+        self.SpdEntry = tk.Entry(rawStatsLabelFrame, width=5)
+        self.SpdEntry.insert(0, "10")
+        SpdLabel.grid(row=5, column=0)
+        self.SpdEntry.grid(row=5, column=1)
+
+        HitLabel = tk.Label(rawStatsLabelFrame, text="Hit: ")
+        self.HitEntry = tk.Entry(rawStatsLabelFrame, width=5)
+        self.HitEntry.insert(0, "10")
+        HitLabel.grid(row=6, column=0)
+        self.HitEntry.grid(row=6, column=1)
+
+        IntLabel = tk.Label(rawStatsLabelFrame, text="Int: ")
+        self.IntEntry = tk.Entry(rawStatsLabelFrame, width=5)
+        self.IntEntry.insert(0, "10")
+        IntLabel.grid(row=7, column=0)
+        self.IntEntry.grid(row=7, column=1)
+
+        ResLabel = tk.Label(rawStatsLabelFrame, text="Res: ")
+        self.ResEntry = tk.Entry(rawStatsLabelFrame, width=5)
+        self.ResEntry.insert(0, "10")
+        ResLabel.grid(row=8, column=0)
+        self.ResEntry.grid(row=8, column=1)
+
+
+        #Unit Skills Frame
+        UnitSkillsLabelFrame = tk.LabelFrame(self, text="Unit Skills")
+        UnitSkillsLabelFrame.grid(row=1, column=1, sticky="n")
+        Skill1 = tk.Label(UnitSkillsLabelFrame, text="Skill 1: ")
+        self.Skill1Entry = tk.Entry(UnitSkillsLabelFrame, width=5)
+        self.Skill1Entry.insert(0, "")
+        Skill1.grid(row=0, column=0)
+        self.Skill1Entry.grid(row=0, column=1)
+        
+        Skill2 = tk.Label(UnitSkillsLabelFrame, text="Skill 2: ")
+        self.Skill2Entry = tk.Entry(UnitSkillsLabelFrame, width=5)
+        self.Skill2Entry.insert(0, "")
+        Skill2.grid(row=1, column=0)
+        self.Skill2Entry.grid(row=1, column=1)
+
+        Skill3 = tk.Label(UnitSkillsLabelFrame, text="Skill 3: ")
+        self.Skill3Entry = tk.Entry(UnitSkillsLabelFrame, width=5)
+        self.Skill3Entry.insert(0, "")
+        Skill3.grid(row=2, column=0)
+        self.Skill3Entry.grid(row=2, column=1)
+
+        Skill4 = tk.Label(UnitSkillsLabelFrame, text="Skill 4: ")
+        self.Skill4Entry = tk.Entry(UnitSkillsLabelFrame, width=5)
+        self.Skill4Entry.insert(0, "")
+        Skill4.grid(row=3, column=0)
+        self.Skill4Entry.grid(row=3, column=1)
+
+        # Unit Passive Frame
+        UnitPassiveLabelFrame = tk.LabelFrame(self, text="Unit Passives")
+        UnitPassiveLabelFrame.grid(row=2, column=1, sticky="n")
+        Passive1 = tk.Label(UnitPassiveLabelFrame, text="Passive 1: ")
+        self.Passive1Entry = tk.Entry(UnitPassiveLabelFrame, width=5)
+        self.Passive1Entry.insert(0, "")
+        Passive1.grid(row=0, column=0)
+        self.Passive1Entry.grid(row=0, column=1)
+
+        Passive2 = tk.Label(UnitPassiveLabelFrame, text="Passive 2: ")
+        self.Passive2Entry = tk.Entry(UnitPassiveLabelFrame, width=5)
+        self.Passive2Entry.insert(0, "")
+        Passive2.grid(row=1, column=0)
+        self.Passive2Entry.grid(row=1, column=1)
+
+        Passive3 = tk.Label(UnitPassiveLabelFrame, text="Passive 3: ")
+        self.Passive3Entry = tk.Entry(UnitPassiveLabelFrame, width=5)
+        self.Passive3Entry.insert(0, "")
+        Passive3.grid(row=2, column=0)
+        self.Passive3Entry.grid(row=2, column=1)
+
+        self.SaveButton = tk.Button(self, text="Save Unit", command=self.SaveUnit)
+        self.SaveButton.grid(row=3, column=0, columnspan=2, sticky="ew")
+
+        self.bind("<Up>", lambda e: self.LoadUnit(e), add="+")
+        self.bind("<Down>", lambda e: self.LoadUnit(e), add="+")
+        self.bind("<Left>", lambda e: self.LoadUnit(e), add="+")
+        self.bind("<Right>", lambda e: self.LoadUnit(e), add="+")
+        self.bind("<Button-1>", lambda e: self.LoadUnit(e), add="+")
+
+    def LoadUnit(self, e):
+        unit = self.MapGrid.focused_tile.unit
+        if unit is None:
+            return
+
+        self.UnitNameEntry.delete(0, "end")
+        self.ClassIDEntry.delete(0, "end")
+        self.UnitIDEntry.delete(0, "end")
+        self.PersonalityEntry.delete(0, "end")
+        self.DeathEventEntry.delete(0, "end")
+        self.maxHPEntry.delete(0, "end")
+        self.maxSPEntry.delete(0, "end")
+        self.AtkEntry.delete(0, "end")
+        self.DefEntry.delete(0, "end")
+        self.SpdEntry.delete(0, "end")
+        self.HitEntry.delete(0, "end")
+        self.IntEntry.delete(0, "end")
+        self.ResEntry.delete(0, "end")
+        self.Skill1Entry.delete(0, "end")
+        self.Skill2Entry.delete(0, "end")
+        self.Skill3Entry.delete(0, "end")
+        self.Skill4Entry.delete(0, "end")
+        self.Passive1Entry.delete(0, "end")
+        self.Passive2Entry.delete(0, "end")
+        self.Passive3Entry.delete(0, "end")
+        
+        self.UnitNameEntry.insert(0, unit.unitName)
+        self.ClassIDEntry.insert(0, unit.classID)
+        self.UnitIDEntry.insert(0, unit.unitID)
+        self.PersonalityEntry.insert(0, unit.personality)
+        self.DeathEventEntry.insert(0, unit.deathEvent)
+        self.maxHPEntry.insert(0, unit.maxHP)
+        self.maxSPEntry.insert(0, unit.maxSP)
+        self.AtkEntry.insert(0, unit.Atk)
+        self.DefEntry.insert(0, unit.Def)
+        self.SpdEntry.insert(0, unit.Spd)
+        self.HitEntry.insert(0, unit.Hit)
+        self.IntEntry.insert(0, unit.Int)
+        self.ResEntry.insert(0, unit.Res)
+        self.Skill1Entry.insert(0, unit.skills[0])
+        self.Skill2Entry.insert(0, unit.skills[1])
+        self.Skill3Entry.insert(0, unit.skills[2])
+        self.Skill4Entry.insert(0, unit.skills[3])
+        self.Passive1Entry.insert(0, unit.passives[0])
+        self.Passive2Entry.insert(0, unit.passives[1])
+        self.Passive3Entry.insert(0, unit.passives[2])
+        
+
+    def SaveUnit(self):
+        new_unit = Unit(
+            unitName=self.UnitNameEntry.get(),
+            classID=self.ClassIDEntry.get(),
+            unitID=self.UnitIDEntry.get(),
+            personality=self.PersonalityEntry.get(),
+            deathEvent=self.DeathEventEntry.get(),
+            maxHP=self.maxHPEntry.get(),
+            maxSP=self.maxSPEntry.get(),
+            Atk=self.AtkEntry.get(),
+            Def=self.DefEntry.get(),
+            Spd=self.SpdEntry.get(),
+            Hit=self.HitEntry.get(),
+            Int=self.IntEntry.get(),
+            Res=self.ResEntry.get(),
+            skills=[
+                self.Skill1Entry.get(),
+                self.Skill2Entry.get(),
+                self.Skill3Entry.get(),
+                self.Skill4Entry.get()
+            ],
+            passives=[
+                self.Passive1Entry.get(),
+                self.Passive2Entry.get(),
+                self.Passive3Entry.get()
+            ]
+        )
+        # ^ brainless mode here
+        if len(self.MapGrid.selected_buttons) > 0:
+            for Tile in self.MapGrid.selected_buttons:
+                Tile.set_unit(new_unit)
+                Tile.has_unit = True
+        else:
+            self.MapGrid.focused_tile.set_unit(new_unit)
+            self.MapGrid.focused_tile.has_unit = True
+class ConfigurationFrame(ttk.Frame):
     def __init__(self, container, *args, **kwargs):
         super().__init__(container, *args, **kwargs)
         self.Tile = None
@@ -9,7 +279,6 @@ class ConfigurationFrame(ttk.LabelFrame):
         self.DP = tk.BooleanVar()
         self.AT = tk.BooleanVar()
 
-        self.configure(text="Tile Configuration", padding=5)
         self.grid(row=0,column=0)
         
         self.HeightLabelFrame = tk.LabelFrame(self, text="Height")
@@ -51,7 +320,7 @@ class ConfigurationFrame(ttk.LabelFrame):
         self.ActionSaveButton.grid(row=3, column=1, sticky="se", pady=5, padx=5)
 
         self.SaveButton = tk.Button(self, text="Save All Configs", command=self.SaveAllConfigs)
-        self.SaveButton.grid(row=3,column=0, sticky="se", pady=5, padx=5)
+        self.SaveButton.grid(row=3,column=0, sticky="s", pady=5, padx=5)
 
         self.EventIDEntry.bind("<Tab>", lambda e: self.TabControl(e))
 
@@ -114,13 +383,23 @@ class Tile(tk.Button):
     def __init__(self, container, ConfigurationFrame, pos, *args, **kwargs):
         super().__init__(container, *args, **kwargs)
         self.container = container
+        self.default_bg = self.cget('bg')
         self.configs = ConfigurationFrame
+        self.has_unit = False
+        self.unit = Unit()
         self.tile_height = 1
         self.tile_position = pos
         self.is_deploy_position = False
         self.is_action_tile = False
-        self.tile_name = "None"
-        self.event_id = "None"
+        self.tile_name = ""
+        self.event_id = ""
+
+    def remove_unit(self):
+        self.configure(bg=self.default_bg)
+        self.unit = None
+    def set_unit(self, new_unit):
+        self.configure(bg="Blue")
+        self.unit = new_unit
 
     def set_height(self, new_height):
         self.configure(text=str(new_height))
@@ -170,6 +449,7 @@ class MapGrid(ttk.Frame):
         super().__init__(*args, **kwargs)
         self.container = container
         self.ConfigurationFrame = ConfigurationFrame
+        self.UnitFrame = UnitFrame
         self.width = width
         self.height = height
         self.focus = [0,0]
@@ -234,9 +514,18 @@ class MapGrid(ttk.Frame):
                 self.ButtonGrid[y][x].bind("<Button-1>", lambda e: self.M1FocusHandler(e))
                 self.ButtonGrid[y][x].bind("<FocusIn>", lambda e: self.SetConfigurationFrame(e))
 
+                self.ButtonGrid[y][x].bind("<Up>", lambda e: self.UnitFrame.LoadUnit(e), add="+")
+                self.ButtonGrid[y][x].bind("<Down>", lambda e: self.UnitFrame.LoadUnit(e), add="+")
+                self.ButtonGrid[y][x].bind("<Left>", lambda e: self.UnitFrame.LoadUnit(e), add="+")
+                self.ButtonGrid[y][x].bind("<Right>", lambda e: self.UnitFrame.LoadUnit(e), add="+")
+                self.ButtonGrid[y][x].bind("<Button-1>", lambda e: self.UnitFrame.LoadUnit(e), add="+")
+
 
         #container.bind("<esc>", lambda Se: self.ClearSelection(e))
         #container.bind_all("<Button-1>", lambda e: self.M1FocusHandler(e))
+
+    def SetUnitFrame(self, new_unitFrame):
+        self.UnitFrame = new_unitFrame
 
     def SetConfigurationFrame(self, event):
         self.ConfigurationFrame.LoadTileConfigs(event.widget)
@@ -283,6 +572,7 @@ class MapGrid(ttk.Frame):
 
     def M1FocusHandler(self, event):
             event.widget.focus_set()
+            self.focused_tile = event.widget
             self.focus = event.widget.tile_position
             self.FocusText.configure(text="Focus:" + str(self.focus))
             # worst code ever written
@@ -349,7 +639,10 @@ class MapGrid(ttk.Frame):
 
     def EmptySelectedButtons(self, e=None):
         for button in self.selected_buttons:
-            button.configure(bg=self.default_bg)
+            if button.has_unit:
+                button.configure(bg="Blue")
+            else:
+                button.configure(bg=self.default_bg)
         self.selected_buttons = set()
         self.ClearSelection()
         self.ConfigurationFrame.Tiles = []
