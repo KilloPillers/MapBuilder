@@ -51,31 +51,31 @@ class UnitFrame(tk.Frame):
         UnitNameLabel = tk.Label(MiscLabelFrame, text="Name: ")
         self.UnitNameEntry = tk.Entry(MiscLabelFrame, width=15)
         self.UnitNameEntry.insert(0, "")
-        UnitNameLabel.grid(row=0, column=0)
+        UnitNameLabel.grid(row=0, column=0, sticky="we", padx=1)
         self.UnitNameEntry.grid(row=0, column=1)
 
         ClassIDLabel = tk.Label(MiscLabelFrame, text="Class ID: ")
         self.ClassIDEntry = tk.Entry(MiscLabelFrame, width=5)
         self.ClassIDEntry.insert(0, "")
-        ClassIDLabel.grid(row=1, column=0)
+        ClassIDLabel.grid(row=1, column=0, sticky="we", padx=1)
         self.ClassIDEntry.grid(row=1, column=1)
 
         UnitIDLabel = tk.Label(MiscLabelFrame, text="Unit ID: ")
         self.UnitIDEntry = tk.Entry(MiscLabelFrame, width=5)
         self.UnitIDEntry.insert(0, "")
-        UnitIDLabel.grid(row=2, column=0)
+        UnitIDLabel.grid(row=2, column=0, sticky="we", padx=1)
         self.UnitIDEntry.grid(row=2, column=1)
 
         PersonalityLabel = tk.Label(MiscLabelFrame, text="Personality: ")
         self.PersonalityEntry = tk.Entry(MiscLabelFrame, width=20)
         self.PersonalityEntry.insert(0, "RandomAction")
-        PersonalityLabel.grid(row=3, column=0)
+        PersonalityLabel.grid(row=3, column=0, sticky="we", padx=1)
         self.PersonalityEntry.grid(row=3, column=1)
 
         DeathEventLabel = tk.Label(MiscLabelFrame, text="Death Event: ")
         self.DeathEventEntry = tk.Entry(MiscLabelFrame, width=5)
         self.DeathEventEntry.insert(0, "nil")
-        DeathEventLabel.grid(row=4, column=0)
+        DeathEventLabel.grid(row=4, column=0, sticky="we", padx=1)
         self.DeathEventEntry.grid(row=4, column=1)
 
 
@@ -83,53 +83,53 @@ class UnitFrame(tk.Frame):
         rawStatsLabelFrame = tk.LabelFrame(self, text="Unit Stats")
         rawStatsLabelFrame.grid(row=1, column=0, rowspan=2, sticky="n")
 
-        maxHPLabel = tk.Label(rawStatsLabelFrame, text="Max HP: ")
+        maxHPLabel = tk.Label(rawStatsLabelFrame, text="Max HP: ")#, bg="#fc2403", fg="#ffffff")
         self.maxHPEntry = tk.Entry(rawStatsLabelFrame, width=5)
         self.maxHPEntry.insert(0, "")
-        maxHPLabel.grid(row=1, column=0)
-        self.maxHPEntry.grid(row=1, column=1)
+        maxHPLabel.grid(row=1, column=0, sticky="we", padx=1)
+        self.maxHPEntry.grid(row=1, column=1, padx=1)
 
-        maxSPLabel = tk.Label(rawStatsLabelFrame, text="Max SP: ")
+        maxSPLabel = tk.Label(rawStatsLabelFrame, text="Max SP: ")#, bg="#0703fc", fg="#ffffff")
         self.maxSPEntry = tk.Entry(rawStatsLabelFrame, width=5)
         self.maxSPEntry.insert(0, "")
-        maxSPLabel.grid(row=2, column=0)
-        self.maxSPEntry.grid(row=2, column=1)
+        maxSPLabel.grid(row=2, column=0, sticky="we", padx=1)
+        self.maxSPEntry.grid(row=2, column=1, padx=1)
 
-        AtkLabel = tk.Label(rawStatsLabelFrame, text="Atk: ")
+        AtkLabel = tk.Label(rawStatsLabelFrame, text="Atk: ")#, bg="#000000", fg="#ff0000")
         self.AtkEntry = tk.Entry(rawStatsLabelFrame, width=5)
         self.AtkEntry.insert(0, "")
-        AtkLabel.grid(row=3, column=0)
-        self.AtkEntry.grid(row=3, column=1)
+        AtkLabel.grid(row=3, column=0, sticky="we", padx=1)
+        self.AtkEntry.grid(row=3, column=1, padx=1)
 
-        DefLabel = tk.Label(rawStatsLabelFrame, text="Def: ")
+        DefLabel = tk.Label(rawStatsLabelFrame, text="Def: ")#, bg="#000000", fg="#00ff00")
         self.DefEntry = tk.Entry(rawStatsLabelFrame, width=5)
         self.DefEntry.insert(0, "")
-        DefLabel.grid(row=4, column=0)
-        self.DefEntry.grid(row=4, column=1)
+        DefLabel.grid(row=4, column=0, sticky="we", padx=1)
+        self.DefEntry.grid(row=4, column=1, padx=1)
 
-        SpdLabel = tk.Label(rawStatsLabelFrame, text="Spd: ")
+        SpdLabel = tk.Label(rawStatsLabelFrame, text="Spd: ")#, bg="#000000", fg="#fffb00")
         self.SpdEntry = tk.Entry(rawStatsLabelFrame, width=5)
         self.SpdEntry.insert(0, "")
-        SpdLabel.grid(row=5, column=0)
-        self.SpdEntry.grid(row=5, column=1)
+        SpdLabel.grid(row=5, column=0, sticky="we", padx=1)
+        self.SpdEntry.grid(row=5, column=1, padx=1)
 
-        HitLabel = tk.Label(rawStatsLabelFrame, text="Hit: ")
+        HitLabel = tk.Label(rawStatsLabelFrame, text="Hit: ")#, bg="#000000", fg="#fff200")
         self.HitEntry = tk.Entry(rawStatsLabelFrame, width=5)
         self.HitEntry.insert(0, "")
-        HitLabel.grid(row=6, column=0)
-        self.HitEntry.grid(row=6, column=1)
+        HitLabel.grid(row=6, column=0, sticky="we", padx=1)
+        self.HitEntry.grid(row=6, column=1, padx=1)
 
-        IntLabel = tk.Label(rawStatsLabelFrame, text="Int: ")
+        IntLabel = tk.Label(rawStatsLabelFrame, text="Int: ")#, bg="#000000", fg="#0000ff")
         self.IntEntry = tk.Entry(rawStatsLabelFrame, width=5)
         self.IntEntry.insert(0, "")
-        IntLabel.grid(row=7, column=0)
-        self.IntEntry.grid(row=7, column=1)
+        IntLabel.grid(row=7, column=0, sticky="we", padx=1)
+        self.IntEntry.grid(row=7, column=1, padx=1)
 
-        ResLabel = tk.Label(rawStatsLabelFrame, text="Res: ")
+        ResLabel = tk.Label(rawStatsLabelFrame, text="Res: ")#, bg="#000000", fg="#ff6a00")
         self.ResEntry = tk.Entry(rawStatsLabelFrame, width=5)
         self.ResEntry.insert(0, "")
-        ResLabel.grid(row=8, column=0)
-        self.ResEntry.grid(row=8, column=1)
+        ResLabel.grid(row=8, column=0, sticky="we", padx=1)
+        self.ResEntry.grid(row=8, column=1, padx=1)
 
 
         #Unit Skills Frame
@@ -139,25 +139,25 @@ class UnitFrame(tk.Frame):
         self.Skill1Entry = tk.Entry(UnitSkillsLabelFrame, width=5)
         self.Skill1Entry.insert(0, "")
         Skill1.grid(row=0, column=0)
-        self.Skill1Entry.grid(row=0, column=1)
+        self.Skill1Entry.grid(row=0, column=1, padx=1)
         
         Skill2 = tk.Label(UnitSkillsLabelFrame, text="Skill 2: ")
         self.Skill2Entry = tk.Entry(UnitSkillsLabelFrame, width=5)
         self.Skill2Entry.insert(0, "")
         Skill2.grid(row=1, column=0)
-        self.Skill2Entry.grid(row=1, column=1)
+        self.Skill2Entry.grid(row=1, column=1, padx=1)
 
         Skill3 = tk.Label(UnitSkillsLabelFrame, text="Skill 3: ")
         self.Skill3Entry = tk.Entry(UnitSkillsLabelFrame, width=5)
         self.Skill3Entry.insert(0, "")
         Skill3.grid(row=2, column=0)
-        self.Skill3Entry.grid(row=2, column=1)
+        self.Skill3Entry.grid(row=2, column=1, padx=1)
 
         Skill4 = tk.Label(UnitSkillsLabelFrame, text="Skill 4: ")
         self.Skill4Entry = tk.Entry(UnitSkillsLabelFrame, width=5)
         self.Skill4Entry.insert(0, "")
         Skill4.grid(row=3, column=0)
-        self.Skill4Entry.grid(row=3, column=1)
+        self.Skill4Entry.grid(row=3, column=1, padx=1)
 
         # Unit Passive Frame
         UnitPassiveLabelFrame = tk.LabelFrame(self, text="Unit Passives")
@@ -166,25 +166,25 @@ class UnitFrame(tk.Frame):
         self.Passive1Entry = tk.Entry(UnitPassiveLabelFrame, width=5)
         self.Passive1Entry.insert(0, "")
         Passive1.grid(row=0, column=0)
-        self.Passive1Entry.grid(row=0, column=1)
+        self.Passive1Entry.grid(row=0, column=1, padx=1)
 
         Passive2 = tk.Label(UnitPassiveLabelFrame, text="Passive 2: ")
         self.Passive2Entry = tk.Entry(UnitPassiveLabelFrame, width=5)
         self.Passive2Entry.insert(0, "")
         Passive2.grid(row=1, column=0)
-        self.Passive2Entry.grid(row=1, column=1)
+        self.Passive2Entry.grid(row=1, column=1, padx=1)
 
         Passive3 = tk.Label(UnitPassiveLabelFrame, text="Passive 3: ")
         self.Passive3Entry = tk.Entry(UnitPassiveLabelFrame, width=5)
         self.Passive3Entry.insert(0, "")
         Passive3.grid(row=2, column=0)
-        self.Passive3Entry.grid(row=2, column=1)
+        self.Passive3Entry.grid(row=2, column=1, padx=1)
 
-        DeleteButton = tk.Button(self, text="Delete Unit", command=self.DeleteUnit)
-        DeleteButton.grid(row=3, column=0, padx=5, sticky="we")
+        DeleteButton = tk.Button(self, text="Delete Unit", command=self.DeleteUnit, bg="#ff0000")
+        DeleteButton.grid(row=3, column=0, padx=5, pady=5, sticky="we")
 
-        SaveButton = tk.Button(self, text="Save Unit", command=self.SaveUnit)
-        SaveButton.grid(row=3, column=1, padx=5, sticky="ew")
+        SaveButton = tk.Button(self, text="Save Unit", command=self.SaveUnit, bg="#00ff00")
+        SaveButton.grid(row=3, column=1, padx=5, pady=5, sticky="ew")
 
     def LoadUnit(self, e):
         unit = self.MapGrid.focused_tile.tile.unit
@@ -290,7 +290,7 @@ class ConfigurationFrame(ttk.Frame):
         self.HeightText = tk.Label(self.HeightLabelFrame, text="Height: ")
         self.HeightText.grid(row=0, column=0)
         self.HeightEntry = tk.Entry(self.HeightLabelFrame, width=20, validate='all', validatecommand=(self.register(lambda e: True if str.isdigit or "" else False), '%P'))
-        self.HeightEntry.insert(0, " ")
+        self.HeightEntry.insert(0, "")
         self.HeightEntry.grid(row=0, column=1)
         self.HeightSaveButton = tk.Button(self.HeightLabelFrame, text="Save Only Height Configs",
                                     command=self.SaveHeightConfigs)
@@ -313,18 +313,18 @@ class ConfigurationFrame(ttk.Frame):
         self.TileNameText = tk.Label(self.ActionTileLabelFrame, text="Tile Name: ")
         self.TileNameText.grid(row=1, column=0)
         self.TileNameEntry = tk.Entry(self.ActionTileLabelFrame, width=20)
-        self.TileNameEntry.insert(0, " ")
+        self.TileNameEntry.insert(0, "")
         self.TileNameEntry.grid(row=1, column=1)
         self.EventIDText = tk.Label(self.ActionTileLabelFrame, text="Event ID: ")
         self.EventIDText.grid(row=2, column=0)
         self.EventIDEntry = tk.Entry(self.ActionTileLabelFrame, width=20)
-        self.EventIDEntry.insert(0, " ")
+        self.EventIDEntry.insert(0, "")
         self.EventIDEntry.grid(row=2, column=1)
         self.ActionSaveButton = tk.Button(self.ActionTileLabelFrame, text="Save Only Action Configs", command=self.SaveActionConfigs)
         self.ActionSaveButton.grid(row=3, column=1, sticky="se", pady=5, padx=5)
 
         self.SaveButton = tk.Button(self, text="Save All Configs", command=self.SaveAllConfigs)
-        self.SaveButton.grid(row=3,column=0, sticky="s", pady=5, padx=5)
+        self.SaveButton.grid(row=3,column=0, sticky="s", pady=20, padx=5)
 
         self.EventIDEntry.bind("<Tab>", lambda e: self.TabControl(e))
 
@@ -546,6 +546,11 @@ class MapGrid(ttk.Frame):
         #container.bind_all("<Button-1>", lambda e: self.M1FocusHandler(e))
 
     def PickleLoad(self, file):
+        if self.ButtonGrid != [[]]:
+            for y in range(self.height):
+                for x in range(self.width):
+                    self.ButtonGrid[y][x].destroy()
+        self.ButtonGrid = [[]]
         self.width = pickle.load(file)
         self.height = pickle.load(file)
         self.WidthEntry.delete(0, "end")

@@ -20,8 +20,8 @@ class MapGraph(FigureCanvasTkAgg):
         self.toolbar = NavigationToolbar2Tk(self.canvas, self.toolbarFrame)
         self.toolbar.update()
 
-        self.quit_button = tk.Button(master=container, text="Quit", command=self._quit)
-        self.quit_button.grid(row=2, column=0)
+        self.quit_button = tk.Button(master=container, text="Quit", command=self._quit, bg="#f25a5a")
+        self.quit_button.grid(row=2, column=0, sticky="we")
 
         #Set up the axes
         self.axe3D = fig.add_subplot(projection='3d')
