@@ -180,14 +180,11 @@ class UnitFrame(tk.Frame):
         Passive3.grid(row=2, column=0)
         self.Passive3Entry.grid(row=2, column=1)
 
-        self.SaveButton = tk.Button(self, text="Save Unit", command=self.SaveUnit)
-        self.SaveButton.grid(row=3, column=0, columnspan=2, sticky="ew")
+        DeleteButton = tk.Button(self, text="Delete Unit", command=self.DeleteUnit)
+        DeleteButton.grid(row=3, column=0, padx=5, sticky="we")
 
-        self.bind("<Up>", lambda e: self.LoadUnit(e), add="+")
-        self.bind("<Down>", lambda e: self.LoadUnit(e), add="+")
-        self.bind("<Left>", lambda e: self.LoadUnit(e), add="+")
-        self.bind("<Right>", lambda e: self.LoadUnit(e), add="+")
-        self.bind("<Button-1>", lambda e: self.LoadUnit(e), add="+")
+        SaveButton = tk.Button(self, text="Save Unit", command=self.SaveUnit)
+        SaveButton.grid(row=3, column=1, padx=5, sticky="ew")
 
     def LoadUnit(self, e):
         unit = self.MapGrid.focused_tile.tile.unit
@@ -236,6 +233,13 @@ class UnitFrame(tk.Frame):
         self.Passive2Entry.insert(0, unit.passives[1])
         self.Passive3Entry.insert(0, unit.passives[2])
         
+    def DeleteUnit(self):
+        if len(self.MapGrid.selected_buttons) > 0:
+            for Tile in self.MapGrid.selected_buttons:
+                Tile.remove_unit()
+        else:
+            self.MapGrid.focused_tile.remove_unit()
+        self.MapGrid.EmptySelectedButtons()
 
     def SaveUnit(self):
         new_unit = Unit(
@@ -270,6 +274,7 @@ class UnitFrame(tk.Frame):
                 Tile.set_unit(new_unit)
         else:
             self.MapGrid.focused_tile.set_unit(new_unit)
+        self.MapGrid.EmptySelectedButtons()
 class ConfigurationFrame(ttk.Frame):
     def __init__(self, container, *args, **kwargs):
         super().__init__(container, *args, **kwargs)
@@ -410,7 +415,7 @@ class TileButton(tk.Button):
             self.configure(bg="Blue")
     def remove_unit(self):
         self.configure(bg=self.default_bg)
-        self.tile.unit = None
+        self.tile.unit = Unit()
         self.tile.has_unit = False
     def set_unit(self, new_unit):
         self.configure(bg="Blue")
