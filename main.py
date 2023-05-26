@@ -62,7 +62,6 @@ class UnitCodeText(tk.Text):
         self.configure(height=40)
         self.insert(tk.END, code)
 
-
 def ShowGraph():
     heights = []
     for y in range(len(M.ButtonGrid)):
@@ -101,18 +100,18 @@ def ExportToLuaCode():
 
     unit_code = ""
     header = "local classid = nil;\nlocal currUnitIndex = 1;\nlocal unitid = nil;\nlocal personality = nil;\nlocal enemyUnit = nil;\nlocal position = nil;\n"
-    unit_id_pos = "classid = {};\nunitid = {};\nposition = Vector2{};\n\nenemyUnit = Unit.new(position, 0,-1)\n"
+    unit_id_pos = "classid = {};\nunitid = {};\nposition = Vector2.new{};\n\nenemyUnit = Unit.new(position, 0,-1)\n"
     tablecode = "enemyUnit.classid = classid\nenemyUnit.weapon = ClassLookup[classid][\"WeaponType\"];\nenemyUnit.range = ClassLookup[classid][\"Move\"];\nenemyUnit.class = ClassLookup[classid][\"Name\"];\nenemyUnit.rawStats = ClassLookup[classid][\"StartingStats\"]\nenemyUnit.img = ClassLookup[classid][\"Image\"];\nenemyUnit.unitIndex = currUnitIndex;\ncurrUnitIndex+=1;\nfor i,v in pairs(ClassLookup[classid][\"ElementResists\"]) do\n    enemyUnit[i] = v;\nend\n\n"
-    unit_stats = "enemyUnit.rawStats.maxhp = {}\nenemyUnit.hp = {};\nenemyUnit.rawStats.maxsp = {}\nenemyUnit.sp = {};\nenemyUnit.rawStats.atk = {}\nenemyUnit.rawStats.def = {}\nenemyUnit.rawStats.spd = {}\nenemyUnit.rawStats.hit = {}\nenemyUnit.rawStats.int = {}\nenemyUnit.rawStats.res = {}\nenemyUnit.id = {};\nenemyUnit.name = \"{}\"\n"
+    unit_stats = "enemyUnit.lvl = {}\nenemyUnit.rawStats.maxhp = {}\nenemyUnit.hp = {};\nenemyUnit.rawStats.maxsp = {}\nenemyUnit.sp = {};\nenemyUnit.rawStats.atk = {}\nenemyUnit.rawStats.def = {}\nenemyUnit.rawStats.spd = {}\nenemyUnit.rawStats.hit = {}\nenemyUnit.rawStats.int = {}\nenemyUnit.rawStats.res = {}\nenemyUnit.id = {};\nenemyUnit.name = \"{}\"\n"
     footer = "personality = \"{}\"\nenemyUnit.personality = game:GetService(\"ServerStorage\").AIPersonalities:FindFirstChild(personality);\nenemyUnit.deathevent = {};\n\nnewmap:PlaceUnit(enemyUnit,position.x,position.y);\n\n\n"
     unit_code += header
     for count, tile in enumerate(unit_list):
         unit = tile.unit
-        unit_code += unit_id_pos.format(unit.classID, unit.unitID, tuple(tile.tile_position))
+        unit_code += unit_id_pos.format(unit.classID, unit.unitID, tuple([x + 1 for x in tile.tile_position]))
         unit_code += tablecode
-        unit_code += unit_stats.format(unit.maxHP, unit.maxHP, unit.maxSP, unit.maxSP, unit.Atk, unit.Def, unit.Spd, unit.Hit, unit.Int, unit.Res, unit.unitID, unit.unitName)
+        unit_code += unit_stats.format(unit.unitLevel, unit.maxHP, unit.maxHP, unit.maxSP, unit.maxSP, unit.Atk, unit.Def, unit.Spd, unit.Hit, unit.Int, unit.Res, unit.unitID, unit.unitName)
         for skill in [s for s in unit.skills if s != ""]:
-            unit_code += "table.insert(enemyUnit.skills,{}\n".format(skill)
+            unit_code += "table.insert(enemyUnit.skills,{})\n".format(skill)
         unit_code += "\n"
         for passive in [p for p in unit.passives if p != ""]:
             unit_code += "table.insert(enemyUnit.passives,{})\n".format(passive)
@@ -140,6 +139,7 @@ TabControl.add(UnitConfigTabFrame, text="Unit Configuration")
 TileConfigurations = ConfigurationFrame(TileConfigTabFrame)
 M = MapGrid(root, 50, 50, 500, 500, TileConfigurations)
 UnitConfigurations = UnitFrame(UnitConfigTabFrame, M)
+TileConfigurations.AddMapGrid(M)
 M.SetUnitFrame(UnitConfigurations)
 ExportButton = tk.Button(CenteredFrame, text="Export To Lua Code", command=ExportToLuaCode)
 ShowGraph = tk.Button(CenteredFrame, text="Show Graph", command=ShowGraph)

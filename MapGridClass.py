@@ -4,6 +4,7 @@ from tkinter import ttk
 
 class Unit():
     def __init__(self,
+            unitLevel="",
             unitName="",
             classID="",
             unitID="",
@@ -20,6 +21,7 @@ class Unit():
             skills=["","","",""],
             passives=["","",""]
         ):
+        self.unitLevel = unitLevel
         self.unitName = unitName
         self.classID = classID
         self.unitID = unitID
@@ -49,34 +51,40 @@ class UnitFrame(tk.Frame):
         MiscLabelFrame.grid(row=0,column=0, columnspan=2)
 
         UnitNameLabel = tk.Label(MiscLabelFrame, text="Name: ")
-        self.UnitNameEntry = tk.Entry(MiscLabelFrame, width=15)
+        self.UnitNameEntry = tk.Entry(MiscLabelFrame, width=15, justify='center')
         self.UnitNameEntry.insert(0, "")
-        UnitNameLabel.grid(row=0, column=0, sticky="we", padx=1)
-        self.UnitNameEntry.grid(row=0, column=1)
+        UnitNameLabel.grid(row=1, column=0, sticky="we", padx=1)
+        self.UnitNameEntry.grid(row=1, column=1)
+        
+        UnitLevelLabel = tk.Label(MiscLabelFrame, text="Level: ")
+        self.UnitLevelEntry = tk.Entry(MiscLabelFrame, width=15, justify='center')
+        self.UnitLevelEntry.insert(0, "")
+        UnitLevelLabel.grid(row=2, column=0, sticky="we", padx=1)
+        self.UnitLevelEntry.grid(row=2, column=1)
 
         ClassIDLabel = tk.Label(MiscLabelFrame, text="Class ID: ")
-        self.ClassIDEntry = tk.Entry(MiscLabelFrame, width=5)
+        self.ClassIDEntry = tk.Entry(MiscLabelFrame, width=5, justify='center')
         self.ClassIDEntry.insert(0, "")
-        ClassIDLabel.grid(row=1, column=0, sticky="we", padx=1)
-        self.ClassIDEntry.grid(row=1, column=1)
+        ClassIDLabel.grid(row=3, column=0, sticky="we", padx=1)
+        self.ClassIDEntry.grid(row=3, column=1)
 
         UnitIDLabel = tk.Label(MiscLabelFrame, text="Unit ID: ")
-        self.UnitIDEntry = tk.Entry(MiscLabelFrame, width=5)
+        self.UnitIDEntry = tk.Entry(MiscLabelFrame, width=5, justify='center')
         self.UnitIDEntry.insert(0, "")
-        UnitIDLabel.grid(row=2, column=0, sticky="we", padx=1)
-        self.UnitIDEntry.grid(row=2, column=1)
+        UnitIDLabel.grid(row=4, column=0, sticky="we", padx=1)
+        self.UnitIDEntry.grid(row=4, column=1)
 
         PersonalityLabel = tk.Label(MiscLabelFrame, text="Personality: ")
-        self.PersonalityEntry = tk.Entry(MiscLabelFrame, width=20)
+        self.PersonalityEntry = tk.Entry(MiscLabelFrame, width=20, justify='center')
         self.PersonalityEntry.insert(0, "RandomAction")
-        PersonalityLabel.grid(row=3, column=0, sticky="we", padx=1)
-        self.PersonalityEntry.grid(row=3, column=1)
+        PersonalityLabel.grid(row=5, column=0, sticky="we", padx=1)
+        self.PersonalityEntry.grid(row=5, column=1)
 
         DeathEventLabel = tk.Label(MiscLabelFrame, text="Death Event: ")
-        self.DeathEventEntry = tk.Entry(MiscLabelFrame, width=5)
+        self.DeathEventEntry = tk.Entry(MiscLabelFrame, width=5, justify='center')
         self.DeathEventEntry.insert(0, "nil")
-        DeathEventLabel.grid(row=4, column=0, sticky="we", padx=1)
-        self.DeathEventEntry.grid(row=4, column=1)
+        DeathEventLabel.grid(row=6, column=0, sticky="we", padx=1)
+        self.DeathEventEntry.grid(row=6, column=1)
 
 
         #rawStats LabelFrame
@@ -192,6 +200,7 @@ class UnitFrame(tk.Frame):
             return
 
         self.UnitNameEntry.delete(0, "end")
+        self.UnitLevelEntry.delete(0, "end")
         self.ClassIDEntry.delete(0, "end")
         self.UnitIDEntry.delete(0, "end")
         self.PersonalityEntry.delete(0, "end")
@@ -213,6 +222,7 @@ class UnitFrame(tk.Frame):
         self.Passive3Entry.delete(0, "end")
         
         self.UnitNameEntry.insert(0, unit.unitName)
+        self.UnitLevelEntry.insert(0, unit.unitLevel)
         self.ClassIDEntry.insert(0, unit.classID)
         self.UnitIDEntry.insert(0, unit.unitID)
         self.PersonalityEntry.insert(0, unit.personality)
@@ -244,6 +254,7 @@ class UnitFrame(tk.Frame):
     def SaveUnit(self):
         new_unit = Unit(
             unitName=self.UnitNameEntry.get(),
+            unitLevel=self.UnitLevelEntry.get(),
             classID=self.ClassIDEntry.get(),
             unitID=self.UnitIDEntry.get(),
             personality=self.PersonalityEntry.get(),
@@ -278,6 +289,7 @@ class UnitFrame(tk.Frame):
 class ConfigurationFrame(ttk.Frame):
     def __init__(self, container, *args, **kwargs):
         super().__init__(container, *args, **kwargs)
+        self.MapGrid = None
         self.Tile = None
         self.Tiles = []
         self.DP = tk.BooleanVar()
@@ -328,60 +340,62 @@ class ConfigurationFrame(ttk.Frame):
 
         self.EventIDEntry.bind("<Tab>", lambda e: self.TabControl(e))
 
+    def AddMapGrid(self, MapGrid):
+        self.MapGrid = MapGrid
     def TabControl(self, e):
         self.HeightEntry.focus()
 
     def LoadTileConfigs(self, Tile):
-        self.Tile = Tile
         self.HeightEntry.delete(0, 'end')
-        self.HeightEntry.insert(0, self.Tile.tile_height)
-        self.DP.set(self.Tile.is_deploy_position)
-        self.AT.set(self.Tile.is_action_tile)
+        self.HeightEntry.insert(0, self.MapGrid.focused_tile.tile.tile_height)
+        self.DP.set(self.MapGrid.focused_tile.tile.is_deploy_position)
+        self.AT.set(self.MapGrid.focused_tile.tile.is_action_tile)
         self.TileNameEntry.delete(0, 'end')
-        self.TileNameEntry.insert(0, self.Tile.tile_name)
+        self.TileNameEntry.insert(0, self.MapGrid.focused_tile.tile.tile_name)
         self.EventIDEntry.delete(0, 'end')
-        self.EventIDEntry.insert(0, self.Tile.event_id)
-        
-    def LoadSelectionsConfigs(self, Tiles):
-        self.Tiles = Tiles
+        self.EventIDEntry.insert(0, self.MapGrid.focused_tile.tile.event_id)
 
     def SaveActionConfigs(self):
-        if len(self.Tiles) > 0:
-            for Tile in self.Tiles:
+        if len(self.MapGrid.selected_buttons) > 0:
+            for Tile in self.MapGrid.selected_buttons:
                 Tile.set_action_tile(self.AT.get())
                 Tile.set_tile_name(self.TileNameEntry.get())
                 Tile.set_event_id(self.EventIDEntry.get())
         else:
-            self.Tile.set_action_tile(self.AT.get())
-            self.Tile.set_tile_name(self.TileNameEntry.get())
-            self.Tile.set_event_id(self.EventIDEntry.get())
+            self.MapGrid.focused_tile.set_action_tile(self.AT.get())
+            self.MapGrid.focused_tile.set_tile_name(self.TileNameEntry.get())
+            self.MapGrid.focused_tile.set_event_id(self.EventIDEntry.get())
+        self.MapGrid.EmptySelectedButtons()
     def SaveDeployConfigs(self):
-        if len(self.Tiles) > 0:
-            for Tile in self.Tiles:
+        if len(self.MapGrid.selected_buttons) > 0:
+            for Tile in self.MapGrid.selected_buttons:
                 Tile.set_deploy_position(self.DP.get())
         else:
-            self.Tile.set_deploy_position(self.DP.get())
+            self.MapGrid.focused_tile.set_deploy_position(self.DP.get())
+        self.MapGrid.EmptySelectedButtons()
     def SaveHeightConfigs(self):
-        if len(self.Tiles) > 0:
-            for Tile in self.Tiles:
+        if len(self.MapGrid.selected_buttons) > 0:
+            for Tile in self.MapGrid.selected_buttons:
                 Tile.set_height(self.HeightEntry.get())
         else:
-            self.Tile.set_height(self.HeightEntry.get())
+            self.MapGrid.focused_tile.set_height(self.HeightEntry.get())
+        self.MapGrid.EmptySelectedButtons()
 
     def SaveAllConfigs(self):
-        if len(self.Tiles) > 0:
-            for Tile in self.Tiles:
+        if len(self.MapGrid.selected_buttons) > 0:
+            for Tile in self.MapGrid.selected_buttons:
                 Tile.set_height(self.HeightEntry.get())
                 Tile.set_deploy_position(self.DP.get())
                 Tile.set_action_tile(self.AT.get())
                 Tile.set_tile_name(self.TileNameEntry.get())
                 Tile.set_event_id(self.EventIDEntry.get())
         else:
-            self.Tile.set_height(self.HeightEntry.get())
-            self.Tile.set_deploy_position(self.DP.get())
-            self.Tile.set_action_tile(self.AT.get())
-            self.Tile.set_tile_name(self.TileNameEntry.get())
-            self.Tile.set_event_id(self.EventIDEntry.get())
+            self.MapGrid.focused_tile.set_height(self.HeightEntry.get())
+            self.MapGrid.focused_tile.set_deploy_position(self.DP.get())
+            self.MapGrid.focused_tile.set_action_tile(self.AT.get())
+            self.MapGrid.focused_tile.set_tile_name(self.TileNameEntry.get())
+            self.MapGrid.focused_tile.set_event_id(self.EventIDEntry.get())
+        self.MapGrid.EmptySelectedButtons()
 
 class Tile():
     def __init__(self, pos, has_unit=False, unit=Unit(), tile_height=1, is_deploy_position=False, is_action_tile=False, tile_name="", event_id=""):
@@ -402,41 +416,52 @@ class TileButton(tk.Button):
         self.configs = ConfigurationFrame
         self.tile = tile
 
-    def PickleLoad(self, file):
-        self.tile = pickle.load(file)
-        self.reload_tile()
-    def PickleSave(self, file):
-        pickle.dump(self.tile, file)
-    def set_tile(self, tile):
-        self.tile = tile
     def reload_tile(self):
         self.configure(text=str(self.tile.tile_height))
         if self.tile.has_unit:
             self.configure(bg="Blue")
+        elif self.tile.is_deploy_position:
+            self.configure(bg="#00FFFF")
+        elif self.tile.is_action_tile:
+            self.configure(bg="#FFFF00")
+        else:
+            self.configure(bg=self.default_bg)
+
+    def set_tile(self, tile):
+        self.tile = tile
+        self.reload_tile()
+
     def remove_unit(self):
-        self.configure(bg=self.default_bg)
         self.tile.unit = Unit()
         self.tile.has_unit = False
+        self.reload_tile()
     def set_unit(self, new_unit):
-        self.configure(bg="Blue")
         self.tile.unit = new_unit
         self.tile.has_unit = True
+        self.reload_tile()
 
     def set_height(self, new_height):
-        self.configure(text=str(new_height))
         self.tile.tile_height = new_height
+        self.reload_tile()
 
     def set_deploy_position(self, bool):
         self.tile.is_deploy_position = bool
+        self.reload_tile()
 
     def set_action_tile(self, bool):
         self.tile.is_action_tile = bool
+        self.reload_tile()
 
     def set_tile_name(self, new_tile_name):
         self.tile.tile_name = new_tile_name
 
     def set_event_id(self, new_event_id):
         self.tile.event_id = new_event_id
+
+    def PickleLoad(self, file):
+        self.set_tile(pickle.load(file))
+    def PickleSave(self, file):
+        pickle.dump(self.tile, file)
 
 class ScrollableFrame(ttk.LabelFrame):
     def __init__(self, canvas_width, canvas_height, *args, **kwargs):
@@ -524,7 +549,7 @@ class MapGrid(ttk.Frame):
         self.ButtonGrid = [[None for x in range(width)] for y in range(height)]
         for y in range(height):
             for x in range(width):
-                self.ButtonGrid[y][x] = TileButton(self.frame.scrollable_frame, self.ConfigurationFrame, Tile([x, y]), height=2, width=4, name="{}:{}".format(x, y), text="1")
+                self.ButtonGrid[y][x] = TileButton(self.frame.scrollable_frame, self.ConfigurationFrame, Tile([x, y]), height=2, width=4, name="{}:{}".format(x+1, y+1), text="1")
                 self.ButtonGrid[y][x].grid(row=y, column=x)
                 self.ButtonGrid[y][x].bind("<Up>", lambda e: self.ArrowKeyFocusHandler(e))
                 self.ButtonGrid[y][x].bind("<Down>", lambda e: self.ArrowKeyFocusHandler(e))
@@ -668,7 +693,6 @@ class MapGrid(ttk.Frame):
         if self.is_selecting:
             self.selection_square[1] = self.focus.copy()
             self.AddRegionToList()
-            self.ConfigurationFrame.LoadSelectionsConfigs(self.selected_buttons)
             self.ClearSelection()
             self.SelectedCountText.configure(text="Selected Count:" + str(len(self.selected_buttons)))
         else:
@@ -683,11 +707,7 @@ class MapGrid(ttk.Frame):
 
     def EmptySelectedButtons(self, e=None):
         for button in self.selected_buttons:
-            if button.tile.has_unit:
-                button.configure(bg="Blue")
-            else:
-                button.configure(bg=self.default_bg)
+            button.reload_tile()
         self.selected_buttons = set()
         self.ClearSelection()
-        self.ConfigurationFrame.Tiles = []
         self.SelectedCountText.configure(text="Selected Count:"+str(len(self.selected_buttons)))
