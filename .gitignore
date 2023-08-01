@@ -1,0 +1,8 @@
+/test.py
+/saf.pickle
+/main.spec
+/venv/
+/dist/
+/build/
+.idea/
+__pycache__/
