@@ -1,10 +1,10 @@
-# Isometric Roblox RPG Map Design Tool
+# Roblox RPG Map Design Tool
 
-The Isometric Roblox RPG Map Design Tool is a graphical user interface (GUI) program built in Python using the Tkinter library. This development tool is designed to streamline the process of creating intricate maps for grid-based isometric Roblox turn-based RPGs. It employs the power of Matplotlib to provide a visual representation of the map's terrain, making it easier for developers to design and customize game environments. The tool also offers functionalities to modify tile properties, manage units, and save/load map data.
+The Roblox RPG Map Design Tool is a graphical user interface (GUI) program built in Python using the Tkinter library. This development tool is designed to streamline the process of creating intricate maps for grid-based Roblox turn-based RPGs. It employs the power of Matplotlib to provide a visual representation of the map's terrain, making it easier for developers to design and customize game environments. The tool also offers functionalities to modify tile properties, manage units, and save/load map data.
 
 ## Features
 
-- **Interactive Map Design:** Create grid-based isometric maps using an intuitive and interactive interface.
+- **Interactive Map Design:** Create grid-based maps using an intuitive and interactive interface.
 - **Terrain Visualization:** Utilize Matplotlib to visualize the terrain of the map, helping you design intricate landscapes.
 - **Tile Customization:** Easily highlight and modify tile properties, including height and unit presence.
 - **Unit Management:** Assign stats and properties to units placed on the map.
