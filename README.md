@@ -25,7 +25,7 @@ The Roblox RPG Map Design Tool is a graphical user interface (GUI) program built
 3. Use the arrow keys for navigation and the space key for tile selection.
 4. Press Shift + Space for selecting multiple tiles within a region.
 5. Left-click on a tile to focus on it.
-7. Drag the mouse to perform actions like moving units.
+7. Drag the mouse with right click to navigate the grid.
 8. Utilize the Unit Frame to manage unit properties.
 9. Save and load map data using the provided options.
 
