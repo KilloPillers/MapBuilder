@@ -40,10 +40,6 @@ The Isometric Roblox RPG Map Design Tool is a graphical user interface (GUI) pro
 
 This tool was created to enhance the efficiency and creativity of the developer working on their Roblox "experience". We hope it accelerates your map design process and contributes to the success of your game projects.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ---
 
 Feel free to reach out to the developers for questions, suggestions, or bug reports [here](https://github.com/KilloPillers/MapBuilder/issues). We appreciate your feedback!
