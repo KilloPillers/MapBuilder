@@ -1,4 +1,5 @@
 import tkinter as tk
+from Map import PygameInterface
 from MapGridClass import MapGrid, ConfigurationFrame, UnitFrame
 from Graph import MapGraph
 from tkinter import ttk, filedialog
@@ -101,7 +102,7 @@ def ExportToLuaCode():
     unit_code = ""
     header = "local classid = nil;\nlocal currUnitIndex = 1;\nlocal unitid = nil;\nlocal personality = nil;\nlocal enemyUnit = nil;\nlocal position = nil;\n"
     unit_id_pos = "classid = {};\nunitid = {};\nposition = Vector2.new{};\n\nenemyUnit = Unit.new(position, 0,-1)\n"
-    tablecode = "enemyUnit.classid = classid\nenemyUnit.weapon = ClassLookup[classid][\"WeaponType\"];\nenemyUnit.range = ClassLookup[classid][\"Move\"];\nenemyUnit.class = ClassLookup[classid][\"Name\"];\nenemyUnit.rawStats = ClassLookup[classid][\"StartingStats\"]\nenemyUnit.img = ClassLookup[classid][\"Image\"];\nenemyUnit.unitIndex = currUnitIndex;\ncurrUnitIndex+=1;\nfor i,v in pairs(ClassLookup[classid][\"ElementResists\"]) do\n    enemyUnit[i] = v;\nend\n\n"
+    tablecode = "enemyUnit.classid = classid\nenemyUnit.weapon = ClassLookup[classid][\"WeaponType\"];\nenemyUnit.range = ClassLookup[classid][\"Move\"];\nenemyUnit.class = ClassLookup[classid][\"Name\"];\nenemyUnit.rawStats = deepcopy(ClassLookup[classid][\"StartingStats\"])\nenemyUnit.img = ClassLookup[classid][\"Image\"];\nenemyUnit.unitIndex = currUnitIndex;\ncurrUnitIndex+=1;\nfor i,v in pairs(ClassLookup[classid][\"ElementResists\"]) do\n    enemyUnit[i] = v;\nend\n\n"
     unit_stats = "enemyUnit.lvl = {}\nenemyUnit.rawStats.maxhp = {}\nenemyUnit.hp = {};\nenemyUnit.rawStats.maxsp = {}\nenemyUnit.sp = {};\nenemyUnit.rawStats.atk = {}\nenemyUnit.rawStats.def = {}\nenemyUnit.rawStats.spd = {}\nenemyUnit.rawStats.hit = {}\nenemyUnit.rawStats.int = {}\nenemyUnit.rawStats.res = {}\nenemyUnit.id = {};\nenemyUnit.name = \"{}\"\n"
     footer = "personality = \"{}\"\nenemyUnit.personality = game:GetService(\"ServerStorage\").AIPersonalities:FindFirstChild(personality);\nenemyUnit.deathevent = {};\n\nnewmap:PlaceUnit(enemyUnit,position.x,position.y);\n\n\n"
     unit_code += header
@@ -126,7 +127,7 @@ filename = None
 root = tk.Tk()
 root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
-root.title("Map Building Tool")
+root.title("Map Editor")
 root.resizable(False, False) #resizing is for screenlits
 RightFrame = tk.Frame(root)
 OutPutFrame = tk.Frame(RightFrame)
@@ -137,7 +138,7 @@ UnitConfigTabFrame = tk.Frame(TabControl)
 TabControl.add(TileConfigTabFrame, text="Tile Configuration")
 TabControl.add(UnitConfigTabFrame, text="Unit Configuration")
 TileConfigurations = ConfigurationFrame(TileConfigTabFrame)
-M = MapGrid(root, 50, 50, 500, 500, TileConfigurations)
+M = MapGrid(root, 10, 10, 600, 600, TileConfigurations)
 UnitConfigurations = UnitFrame(UnitConfigTabFrame, M)
 TileConfigurations.AddMapGrid(M)
 M.SetUnitFrame(UnitConfigurations)
@@ -149,6 +150,13 @@ SaveButton = tk.Button(CenteredFrame, command=PickleSaveMap, text="Save Map Data
 LoadButton = tk.Button(CenteredFrame, command=PickleLoadMap, text="Load Map Data")
 
 M.grid(row=0, column=0)
+def tkinter_update():
+    M.pygame_interface.handle_events()
+    M.pygame_interface.update_screen()
+    root.after(20, tkinter_update)
+
+root.after(20, tkinter_update)
+
 RightFrame.grid(row=0, column=1, sticky="nw")
 TabControl.grid(row=0, column=1, sticky="n")
 OutPutFrame.grid(row=1, column=1, sticky="ns")

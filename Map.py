@@ -1,13 +1,17 @@
+import os
 import pygame
 import sys
 import tkinter as tk
 from ButtonClass import ButtonClass
+from pygame.locals import DOUBLEBUF
 
 BACKGROUND_COLOR = (49, 51, 55)
 DEFAULT_BUTTON_COLOR = (30, 31, 34)
 
 class PygameInterface():
-    def __init__(self, width, height, grid_width, grid_height):
+    def __init__(self, embed, width, height, grid_width, grid_height):
+        os.environ['SDL_WINDOWID'] = str(embed.winfo_id())
+        os.environ['SDL_VIDEODRIVER'] = 'windib'
         pygame.init()
         self.grid_width = grid_width
         self.grid_height = grid_height
@@ -19,7 +23,7 @@ class PygameInterface():
         
         self.width = width
         self.height = height
-        self.screen = pygame.display.set_mode((self.width, self.height))
+        self.screen = pygame.display.set_mode((self.width, self.height), DOUBLEBUF)
         
         self.dragging = False
         self.selecting = False
@@ -133,18 +137,18 @@ class PygameInterface():
 def tkinter_update():
     pygame_interface.handle_events()
     pygame_interface.update_screen()
-    pygame.display.update()
-    root.after(20, tkinter_update)
+    root.after(5, tkinter_update)
 
-
-pygame_interface = PygameInterface(800, 600, 10, 10)
-while True:
-    pygame_interface.handle_events()
-    pygame_interface.update_screen()
-    pygame.display.update()
-
-#root = tk.Tk()
-#root.title("Map Editor")
-#root.after(20, tkinter_update)
-#root.mainloop()
+if __name__ == "__main__":
+    root = tk.Tk()
+    root.title("Map Editor")
+    embed = tk.Frame(root, width=500, height=500)
+    embed.pack()
+    pygame_interface = PygameInterface(embed, 800, 600, 10, 10)
+    #while True:
+    #    pygame_interface.handle_events()
+    #    pygame_interface.update_screen()
+    #    pygame.display.update()
+    root.after(5, tkinter_update)
+    root.mainloop()
 

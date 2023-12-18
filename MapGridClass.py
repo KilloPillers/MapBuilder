@@ -1,6 +1,7 @@
 import pickle
 import tkinter as tk
 from tkinter import ttk
+from Map import PygameInterface
 
 class Unit():
     def __init__(self,
@@ -462,42 +463,6 @@ class TileButton(tk.Button):
     def PickleSave(self, file):
         pickle.dump(self.tile, file)
 
-class ScrollableFrame(ttk.LabelFrame):
-    def __init__(self, canvas_width, canvas_height, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.configure(text="Map Grid", padding=5)
-
-        self.canvas = tk.Canvas(self, width=canvas_width, height=canvas_height, highlightthickness=2, highlightbackground="Black")
-        self.v_scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
-        self.h_scrollbar = ttk.Scrollbar(self, orient="horizontal", command=self.canvas.xview)
-        self.scrollable_frame = ttk.Frame(self.canvas, name="scrollframe")
-
-        self.scrollable_frame.bind(
-            "<Configure>",
-            lambda e: self.canvas.configure(
-                scrollregion=self.canvas.bbox("all")
-            )
-        )
-
-        self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="center")
-
-        self.canvas.configure(yscrollcommand=self.v_scrollbar.set)
-        self.canvas.configure(xscrollcommand=self.h_scrollbar.set)
-        self.canvas.configure(bg='blue')
-
-        self.canvas.grid(row=0, column=0, pady=40)
-        self.v_scrollbar.grid(row=0, column=1, sticky='ns')
-        self.h_scrollbar.grid(row=1, column=0, sticky='we')
-
-    def zoom_in(self, event):
-        print("zoom in")
-        self.canvas.scale("all", event.x, event.y, 1.2, 1.2)  # Zoom in by 20%
-
-    def zoom_out(self, event):
-        print("zoom out")
-        self.canvas.scale("all", event.x, event.y, 0.8, 0.8)  # Zoom out by 20%
-
-
 class MapGrid(ttk.Frame):
     def __init__(self, container, width, height, canvas_width, canvas_height, ConfigurationFrame, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -517,11 +482,14 @@ class MapGrid(ttk.Frame):
         self.ButtonGrid = [[]]
 
         #Initialize Widgets
-        self.frame = ScrollableFrame(canvas_width, canvas_height)
+        self.frame = tk.Frame(container)
         self.frame.grid(row=0,column=0, sticky='s')
 
+        #self.pygame_interface = PygameInterface(self.frame, width=canvas_width/2, height=canvas_height/2, grid_width=width, grid_height=height)
+
+        #TOP OF LEFT FRAME
         self.mapsizeframe = tk.Frame(self.frame)
-        self.mapsizeframe.grid(row=0, column=0, sticky='nw')
+        self.mapsizeframe.grid(row=0, column=0, sticky='n')
 
         self.HeightText = tk.Label(self.mapsizeframe, text="Height:")
         self.HeightEntry = tk.Entry(self.mapsizeframe, width=20)
@@ -537,9 +505,17 @@ class MapGrid(ttk.Frame):
 
         self.ChangeGridButton = tk.Button(self.mapsizeframe, text="Change Size", command=self.RebuildMap)
         self.ChangeGridButton.grid(row=0, column=5)
+        #----------------------------------------#
 
+        #PyGame WINDOW
+        self.pygameframe = tk.Frame(self.frame, width=canvas_width, height=canvas_height)
+        self.pygameframe.grid(row=1, column=0)
+        self.pygame_interface = PygameInterface(self.pygameframe, width=canvas_width, height=canvas_height,
+                                                grid_width=width, grid_height=height)
+
+        #BOTTOM OF LEFT FRAME
         self.BottomFrame = tk.Frame(self.frame)
-        self.BottomFrame.grid(row=0,column=0, sticky='sw')
+        self.BottomFrame.grid(row=2,column=0, sticky='s')
         self.ClearSelectionButton = tk.Button(self.BottomFrame, text="Clear Selection", command=self.EmptySelectedButtons)
         self.ClearSelectionButton.grid(row=0, column=0)
         self.FocusText = tk.Label(self.BottomFrame, text="Focus:"+str(self.focus))
@@ -548,6 +524,7 @@ class MapGrid(ttk.Frame):
         self.SelectionText.grid(row=0,column=2,padx=5)
         self.SelectedCountText = tk.Label(self.BottomFrame, text="Selected Count:" + str(len(self.selected_buttons)))
         self.SelectedCountText.grid(row=0,column=3,padx=5)
+        #----------------------------------------#
 
         self.default_bg = self.ClearSelectionButton.cget('bg')
 
@@ -633,7 +610,7 @@ class MapGrid(ttk.Frame):
                 for x in range(self.width):
                     self.ButtonGrid[y][x].destroy()
 
-        self.InitializeButtons(new_height, new_width)
+        #self.InitializeButtons(new_height, new_width)
         self.EmptySelectedButtons()
         self.height = new_height
         self.width = new_width
