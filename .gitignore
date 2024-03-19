@@ -1,5 +1,6 @@
 /test.py
-/saf.pickle
+*.pickle
+*.json
 /main.spec
 /venv/
 /dist/

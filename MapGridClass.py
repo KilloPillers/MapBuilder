@@ -1,6 +1,14 @@
 import pickle
 import tkinter as tk
 from tkinter import ttk
+import json
+
+class CustomEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if hasattr(obj, "to_json"):
+            return obj.to_json()
+        # Let the base class default method raise the TypeError
+        return json.JSONEncoder.default(self, obj)
 
 class Unit():
     def __init__(self,
@@ -39,6 +47,30 @@ class Unit():
 
         self.skills = skills
         self.passives = passives
+
+    def to_json(self):
+        return {
+            'unitLevel': self.unitLevel,
+            'unitName': self.unitName,
+            'classID': self.classID,
+            'unitID': self.unitID,
+            'personality': self.personality,
+            'deathEvent': self.deathEvent,
+            'maxHP': self.maxHP,
+            'maxSP': self.maxSP,
+            'Atk': self.Atk,
+            'Def': self.Def,
+            'Spd': self.Spd,
+            'Hit': self.Hit,
+            'Int': self.Int,
+            'Res': self.Res,
+            'skills': self.skills,
+            'passives': self.passives
+        }
+
+    @classmethod
+    def from_json(cls, json_string):
+        return cls(**json_string)
 
 class UnitFrame(tk.Frame):
     def __init__(self, container, MapGrid, *args, **kwargs):
@@ -335,7 +367,7 @@ class ConfigurationFrame(ttk.Frame):
         self.ActionSaveButton.grid(row=3, column=1, sticky="se", pady=5, padx=5)
 
         self.SaveButton = tk.Button(self, text="Save All Configs", command=self.SaveAllConfigs)
-        self.SaveButton.grid(row=3,column=0, sticky="s", pady=20, padx=5)
+        self.SaveButton.grid(row=3,column=0, sticky="s", pady=25, padx=5)
 
         self.EventIDEntry.bind("<Tab>", lambda e: self.TabControl(e))
 
@@ -407,6 +439,22 @@ class Tile():
         self.tile_name = tile_name
         self.event_id = event_id
 
+    def to_json(self):
+        return {
+            'has_unit': self.has_unit,
+            'unit': self.unit,
+            'tile_height': self.tile_height,
+            'tile_position': self.tile_position,
+            'is_deploy_position': self.is_deploy_position,
+            'is_action_tile': self.is_action_tile,
+            'tile_name': self.tile_name,
+            'event_id': self.event_id
+        }
+    @classmethod
+    def from_json(self, json_data):
+        unit = Unit.from_json(json_data['unit'])
+        return self(json_data['tile_position'], json_data['has_unit'], unit, json_data['tile_height'], json_data['is_deploy_position'], json_data['is_action_tile'], json_data['tile_name'], json_data['event_id'])
+
 class TileButton(tk.Button):
     def __init__(self, container, ConfigurationFrame, tile, *args, **kwargs):
         super().__init__(container, *args, **kwargs)
@@ -457,6 +505,12 @@ class TileButton(tk.Button):
     def set_event_id(self, new_event_id):
         self.tile.event_id = new_event_id
 
+    def to_json(self):
+        return self.tile.to_json()
+
+    def from_json(self, json_data):
+         self.set_tile(Tile.from_json(json_data))
+
     def PickleLoad(self, file):
         self.set_tile(pickle.load(file))
     def PickleSave(self, file):
@@ -490,11 +544,9 @@ class ScrollableFrame(ttk.LabelFrame):
         self.h_scrollbar.grid(row=1, column=0, sticky='we')
 
     def zoom_in(self, event):
-        print("zoom in")
         self.canvas.scale("all", event.x, event.y, 1.2, 1.2)  # Zoom in by 20%
 
     def zoom_out(self, event):
-        print("zoom out")
         self.canvas.scale("all", event.x, event.y, 0.8, 0.8)  # Zoom out by 20%
 
 
@@ -553,7 +605,29 @@ class MapGrid(ttk.Frame):
 
         self.container.bind("<Escape>", lambda e: self.EmptySelectedButtons(e))
 
+    def to_json(self):
+        return {
+            'width': self.width,
+            'height': self.height,
+            'ButtonGrid': self.ButtonGrid
+        }
 
+    def from_json(self, json_data):
+        if self.ButtonGrid != [[]]:
+            for y in range(self.height):
+                for x in range(self.width):
+                    self.ButtonGrid[y][x].destroy()
+        self.width = json_data['width']
+        self.height = json_data['height']
+        self.WidthEntry.delete(0, "end")
+        self.HeightEntry.delete(0, "end")
+        self.WidthEntry.insert(0, str(self.width))
+        self.HeightEntry.insert(0, str(self.height))
+        self.RebuildMap()
+        for y in range(self.height):
+            for x in range(self.width):
+                tile_data = json_data['ButtonGrid'][y][x]
+                self.ButtonGrid[y][x].from_json(tile_data)
         # Initialize Buttons
     def InitializeButtons(self, height, width):
         self.ButtonGrid = [[None for x in range(width)] for y in range(height)]
@@ -578,10 +652,6 @@ class MapGrid(ttk.Frame):
                 self.ButtonGrid[y][x].bind("<B3-Motion>", lambda e: self.OnDrag(e), add="+")
                 self.ButtonGrid[y][x].bind("<Button-1>", lambda e: self.UnitFrame.LoadUnit(e), add="+")
 
-
-        #container.bind("<esc>", lambda Se: self.ClearSelection(e))
-        #container.bind_all("<Button-1>", lambda e: self.M1FocusHandler(e))
-
     def OnRightClick(self, event):
         self.frame.canvas.scan_mark(event.x, event.y)
 
@@ -604,6 +674,10 @@ class MapGrid(ttk.Frame):
         for y in range(self.height):
             for x in range(self.width):
                 self.ButtonGrid[y][x].PickleLoad(file)
+
+    def MapToJSON(self, file):
+        json.dump(self, file, cls=CustomEncoder, indent=4)
+
     def PickleSave(self, file):
         pickle.dump(self.width, file)
         pickle.dump(self.height, file)

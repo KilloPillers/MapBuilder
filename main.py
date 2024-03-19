@@ -3,6 +3,7 @@ from MapGridClass import MapGrid, ConfigurationFrame, UnitFrame
 from Graph import MapGraph
 from tkinter import ttk, filedialog
 import os
+import json
 
 def PickleLoadMap():
     filename = filedialog.askopenfilename(initialdir=os.getcwd(),
@@ -23,6 +24,27 @@ def PickleSaveMap():
         return
     with open(filename, 'wb') as pickle_file:
         M.PickleSave(pickle_file)
+
+def MapToJSON():
+    filename = filedialog.asksaveasfilename(initialdir=os.getcwd(),
+                                            title="Save a File",
+                                            defaultextension=".json",
+                                            confirmoverwrite= False)
+    if filename == '':
+        return
+    with open(filename, 'w') as json_file:
+        M.MapToJSON(json_file)
+
+def MapFromJSON():
+    filename = filedialog.askopenfilename(initialdir=os.getcwd(),
+                                          title="Select a File",
+                                          filetypes=(("JSON Files",
+                                                      "*.json*"),))
+    if filename == '':
+        return
+    with open(filename, 'r') as json_file:
+        json_data = json.load(json_file)
+        M.from_json(json_data)
 
 class OutputCodeFrame(tk.Frame):
     def __init__(self, container, map_code, unit_code, *args, **kwargs):
@@ -141,23 +163,26 @@ M = MapGrid(root, 50, 50, 500, 500, TileConfigurations)
 UnitConfigurations = UnitFrame(UnitConfigTabFrame, M)
 TileConfigurations.AddMapGrid(M)
 M.SetUnitFrame(UnitConfigurations)
-ExportButton = tk.Button(CenteredFrame, text="Export To Lua Code", command=ExportToLuaCode)
-ShowGraph = tk.Button(CenteredFrame, text="Show Graph", command=ShowGraph)
 
-
+ExportButton = tk.Button(CenteredFrame, command=ExportToLuaCode, text="Export To Lua Code")
+ShowGraph = tk.Button(CenteredFrame, command=ShowGraph, text="Show Graph")
 SaveButton = tk.Button(CenteredFrame, command=PickleSaveMap, text="Save Map Data")
 LoadButton = tk.Button(CenteredFrame, command=PickleLoadMap, text="Load Map Data")
+MapToJSON = tk.Button(CenteredFrame, command=MapToJSON, text="Export To JSON")
+MapFromJSON = tk.Button(CenteredFrame, command=MapFromJSON, text="Import From JSON")
 
 M.grid(row=0, column=0)
 RightFrame.grid(row=0, column=1, sticky="nw")
 TabControl.grid(row=0, column=1, sticky="n")
 OutPutFrame.grid(row=1, column=1, sticky="ns")
-CenteredFrame.grid(pady=45, sticky="we")
+CenteredFrame.grid(sticky="we")
 CenteredFrame.grid_rowconfigure(0, weight=1)
 CenteredFrame.grid_columnconfigure(0, weight=1)
 ExportButton.grid(row=0, column=0, sticky="nswe", pady=5, padx=5)
 ShowGraph.grid(row=1, column=0, sticky="nswe", pady=5, padx=5)
 SaveButton.grid(row=2, column=0, sticky="nswe", pady=5, padx=5)
 LoadButton.grid(row=3, column=0, sticky="nswe", pady=5, padx=5)
+MapToJSON.grid(row=4, column=0, sticky="nswe", pady=5, padx=5)
+MapFromJSON.grid(row=5, column=0, sticky="nswe", pady=5, padx=5)
 
 root.mainloop()
