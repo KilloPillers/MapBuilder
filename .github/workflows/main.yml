@@ -21,7 +21,6 @@ jobs:
 
     - run: pip install -r requirements.txt pyinstaller
     - run: pyinstaller --onefile mapbuilder.py
-    - run: ./dist/mapbuilder/mapbuilder
     - uses: actions/upload-artifact@v2
       with:
         path: dist/*
