@@ -317,6 +317,7 @@ class UnitFrame(tk.Frame):
         else:
             self.MapGrid.focused_tile.set_unit(new_unit)
         self.MapGrid.EmptySelectedButtons()
+        
 class ConfigurationFrame(ttk.Frame):
     def __init__(self, container, *args, **kwargs):
         super().__init__(container, *args, **kwargs)
@@ -373,6 +374,7 @@ class ConfigurationFrame(ttk.Frame):
 
     def AddMapGrid(self, MapGrid):
         self.MapGrid = MapGrid
+
     def TabControl(self, e):
         self.HeightEntry.focus()
 
@@ -397,6 +399,7 @@ class ConfigurationFrame(ttk.Frame):
             self.MapGrid.focused_tile.set_tile_name(self.TileNameEntry.get())
             self.MapGrid.focused_tile.set_event_id(self.EventIDEntry.get())
         self.MapGrid.EmptySelectedButtons()
+
     def SaveDeployConfigs(self):
         if len(self.MapGrid.selected_buttons) > 0:
             for Tile in self.MapGrid.selected_buttons:
@@ -404,6 +407,7 @@ class ConfigurationFrame(ttk.Frame):
         else:
             self.MapGrid.focused_tile.set_deploy_position(self.DP.get())
         self.MapGrid.EmptySelectedButtons()
+
     def SaveHeightConfigs(self):
         if len(self.MapGrid.selected_buttons) > 0:
             for Tile in self.MapGrid.selected_buttons:
@@ -443,7 +447,7 @@ class Tile():
         return {
             'has_unit': self.has_unit,
             'unit': self.unit,
-            'tile_height': self.tile_height,
+            'tile_height': int(self.tile_height),
             'tile_position': self.tile_position,
             'is_deploy_position': self.is_deploy_position,
             'is_action_tile': self.is_action_tile,
@@ -482,6 +486,7 @@ class TileButton(tk.Button):
         self.tile.unit = Unit()
         self.tile.has_unit = False
         self.reload_tile()
+
     def set_unit(self, new_unit):
         self.tile.unit = new_unit
         self.tile.has_unit = True
@@ -513,6 +518,7 @@ class TileButton(tk.Button):
 
     def PickleLoad(self, file):
         self.set_tile(pickle.load(file))
+
     def PickleSave(self, file):
         pickle.dump(self.tile, file)
 
@@ -609,7 +615,7 @@ class MapGrid(ttk.Frame):
         return {
             'width': self.width,
             'height': self.height,
-            'ButtonGrid': self.ButtonGrid
+            'ButtonGrid': list(zip(*self.ButtonGrid))
         }
 
     def from_json(self, json_data):

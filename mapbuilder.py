@@ -94,6 +94,7 @@ def ShowGraph():
 def ExportToLuaCode():
     if M.ButtonGrid == [[]]:
         return
+    # Reversing the grid to match the way the game reads it
     ButtonGrid = list(zip(*M.ButtonGrid))
     deploy_position_list = []
     action_tile_list = []
