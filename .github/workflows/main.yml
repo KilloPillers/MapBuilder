@@ -21,6 +21,21 @@ jobs:
 
     - run: pip install -r requirements.txt pyinstaller
     - run: pyinstaller --onefile -w mapbuilder.py
+
+    - name: Install GitHub CLI
+      run: |
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+        echo "deb https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+        sudo apt-get update
+        sudo apt-get install gh
+
+    - name: Create Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        TAG_NAME="v$(date +'%Y%m%d%H%M%S')"
+        gh release create "$TAG_NAME" ./dist/mapbuilder/mapbuilder --notes "Automated release"
+    
     - uses: actions/upload-artifact@v4
       with:
         path: dist/*
