@@ -21,6 +21,19 @@ jobs:
 
     - run: pip install -r requirements.txt pyinstaller
     - run: pyinstaller --onefile -w mapbuilder.py
+
+    - name: Install GitHub CLI
+      run: |
+        Invoke-WebRequest -Uri https://github.com/cli/cli/releases/download/v2.27.0/gh_2.27.0_windows_amd64.msi -OutFile ghcli.msi
+        msiexec.exe /i ghcli.msi /quiet
+
+    - name: Create Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+      run: |
+        $tagName = "v" + (Get-Date -Format "yyyyMMddHHmmss")
+        gh release create $tagName .\dist\mapbuilder.exe --notes "Automated release"
+    
     - uses: actions/upload-artifact@v4
       with:
         path: dist/*
