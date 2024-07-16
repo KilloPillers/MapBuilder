@@ -20,7 +20,7 @@ jobs:
         python-version: 3.12.4
 
     - run: pip install -r requirements.txt pyinstaller
-    - run: pyinstaller --onefile mapbuilder.py
+    - run: pyinstaller --onefile -w mapbuilder.py
     - uses: actions/upload-artifact@v4
       with:
         path: dist/*
