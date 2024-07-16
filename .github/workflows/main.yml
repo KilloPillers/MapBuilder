@@ -32,7 +32,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         $tagName = "v" + (Get-Date -Format "yyyyMMddHHmmss")
-        gh release create $tagName .\dist\mapbuilder\mapbuilder.exe --notes "Automated release"
+        gh release create $tagName .\dist\mapbuilder.exe --notes "Automated release"
     
     - uses: actions/upload-artifact@v4
       with:
