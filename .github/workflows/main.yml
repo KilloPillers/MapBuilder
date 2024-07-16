@@ -20,7 +20,13 @@ jobs:
         python-version: 3.7
 
     - run: pip install -r requirements.txt pyinstaller
-    - run: pyinstaller mapbuilder.py
+    - run: |
+        echo "Current Directory:"
+        pwd
+        echo "Directory Contents:"
+        ls -la
+        export PYTHONPATH=$PYTHONPATH:$(pwd)
+    - run: pyinstaller --path . mapbuilder.py
     - run: ./dist/mapbuilder/mapbuilder
     - uses: actions/upload-artifact@v2
       with:
