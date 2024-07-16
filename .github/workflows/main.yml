@@ -1,0 +1,116 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: [3.8]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+        pip install -r requirements.txt
+
+    - name: Build with PyInstaller
+      run: |
+        pyinstaller --onefile mapbuilder.py
+
+    - name: Archive the build output
+      if: matrix.os == 'windows-latest'
+      run: |
+        $env:ARCHIVE_NAME = "mapbuilder.exe"
+        Compress-Archive -Path dist\mapbuilder.exe -DestinationPath dist\$env:ARCHIVE_NAME
+      shell: pwsh
+      if: matrix.os != 'windows-latest'
+      run: |
+        tar -czvf mapbuilder_${{ matrix.os }}.tar.gz dist/mapbuilder
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-${{ matrix.os }}
+        path: |
+          dist/mapbuilder_windows.exe
+          dist/mapbuilder_ubuntu-latest.tar.gz
+          dist/mapbuilder_macos-latest.tar.gz
+
+  create-release:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.sha }}
+        release_name: Release ${{ github.sha }}
+        draft: false
+        prerelease: false
+
+    - name: Download Linux Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-ubuntu-latest
+
+    - name: Upload Linux Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: dist/mapbuilder_ubuntu-latest.tar.gz
+        asset_name: mapbuilder_linux
+        asset_content_type: application/octet-stream
+
+    - name: Download Windows Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-windows-latest
+
+    - name: Upload Windows Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: dist/mapbuilder_windows.exe
+        asset_name: mapbuilder_windows.exe
+        asset_content_type: application/octet-stream
+
+    - name: Download Mac Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-macos-latest
+
+    - name: Upload Mac Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: dist/mapbuilder_macos-latest.tar.gz
+        asset_name: mapbuilder_mac
+        asset_content_type: application/octet-stream
